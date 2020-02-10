@@ -3,16 +3,16 @@ export default {
   STRIPE_KEY: "pk_test_UJQs7zJIzntPN1pXdLRBBIIq00tzxVN5PJ",
   s3: {
     REGION: "eu-central-1",
-    BUCKET: "notes-app-uploads-cl"
+    BUCKET: "notes-app-api-dev-attachmentsbucket-b2i0nj5hnvd0"
   },
   apiGateway: {
     REGION: "eu-central-1",
-    URL: "https://6u26xn64ub.execute-api.eu-central-1.amazonaws.com/prod"
+    URL: "https://uz3245lz3f.execute-api.eu-central-1.amazonaws.com/dev"
   },
   cognito: {
     REGION: "eu-central-1",
-    USER_POOL_ID: "eu-central-1_FpxUDSX3U",
+    USER_POOL_ID: "eu-central-1_xdKkCn7qL",
     APP_CLIENT_ID: "5841laobkcujjki7m4guekhuem",
-    IDENTITY_POOL_ID: "eu-central-1:75455d4f-32c5-43fd-bd17-ac75f0df9936"
+    IDENTITY_POOL_ID: "eu-central-1:602aebe3-423b-4f33-b8fd-c66d4979b0be"
   }
 };
