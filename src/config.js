@@ -12,7 +12,7 @@ export default {
   cognito: {
     REGION: "eu-central-1",
     USER_POOL_ID: "eu-central-1_xdKkCn7qL",
-    APP_CLIENT_ID: "5841laobkcujjki7m4guekhuem",
+    APP_CLIENT_ID: "1uu4r19qn5irj592itjr9th9md",
     IDENTITY_POOL_ID: "eu-central-1:602aebe3-423b-4f33-b8fd-c66d4979b0be"
   }
 };

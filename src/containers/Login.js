@@ -13,6 +13,7 @@ export default function Login(props) {
   });
 
   function validateForm() {
+    fields.email = fields.email.toLowerCase();
     return fields.email.length > 0 && fields.password.length > 0;
   }
 
