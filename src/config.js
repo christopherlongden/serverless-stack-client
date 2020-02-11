@@ -1,4 +1,5 @@
 const dev = {
+  Environment_Name: "Development",
   STRIPE_KEY: "pk_test_UJQs7zJIzntPN1pXdLRBBIIq00tzxVN5PJ",
   s3: {
     REGION: "eu-central-1",
@@ -17,6 +18,7 @@ const dev = {
 };
 
 const prod = {
+  Environment_Name: "Production",
   STRIPE_KEY: "pk_test_UJQs7zJIzntPN1pXdLRBBIIq00tzxVN5PJ",
   s3: {
     REGION: "eu-central-1",

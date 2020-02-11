@@ -4,6 +4,7 @@ import "./Home.css";
 import { API } from "aws-amplify";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
+import config from "../config";
 
 export default function Home(props) {
   const [notes, setNotes] = useState([]);
@@ -65,6 +66,7 @@ export default function Home(props) {
             Signup
           </Link>
         </div>
+        <div>Current Environment: { config.Environment_Name } </div>
       </div>
     );
   }
