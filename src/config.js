@@ -1,6 +1,4 @@
-// dev
-export default {
-  MAX_ATTACHMENT_SIZE: 5000000,
+const dev = {
   STRIPE_KEY: "pk_test_UJQs7zJIzntPN1pXdLRBBIIq00tzxVN5PJ",
   s3: {
     REGION: "eu-central-1",
@@ -17,10 +15,8 @@ export default {
     IDENTITY_POOL_ID: "eu-central-1:602aebe3-423b-4f33-b8fd-c66d4979b0be"
   }
 };
-/*
-// Production
-export default {
-  MAX_ATTACHMENT_SIZE: 5000000,
+
+const prod = {
   STRIPE_KEY: "pk_test_UJQs7zJIzntPN1pXdLRBBIIq00tzxVN5PJ",
   s3: {
     REGION: "eu-central-1",
@@ -37,4 +33,14 @@ export default {
     IDENTITY_POOL_ID: "eu-central-1:08ab8c9b-15ea-45ef-9e8c-e28461801629"
   }
 };
-*/
+
+// Default to dev if not set
+const config = process.env.REACT_APP_STAGE === 'prod'
+  ? prod
+  : dev;
+
+export default {
+  // Add common config values here
+  MAX_ATTACHMENT_SIZE: 5000000,
+  ...config
+};
