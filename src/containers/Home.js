@@ -101,13 +101,13 @@ export default function Home(props) {
   function renderPage() {
     return (
       <>
-        <div className="groups">
+        <div className="content">
           <PageHeader>Your Groups</PageHeader>
           <ListGroup>
             {!isLoading && renderGroupsList(groups)}
           </ListGroup>
         </div>
-        <div className="notes">
+        <div className="content">
           <PageHeader>Your Notes</PageHeader>
           <ListGroup>
             {!isLoading && renderNotesList(notes)}
