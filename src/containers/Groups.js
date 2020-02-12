@@ -1,15 +1,14 @@
-import React, { useRef, useState, useEffect } from "react";
-import { API, Storage } from "aws-amplify";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { API } from "aws-amplify";
+import { FormGroup, FormControl, ControlLabel, Checkbox } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import config from "../config";
 import "./Groups.css";
-import { s3Upload } from "../libs/awsLib";
 
 export default function Groups(props) {
-    const file = useRef(null);
     const [group, setGroup] = useState(null);
     const [groupName, setGroupName] = useState("");
+    const [description, setDescription] = useState("");
+    const [isPublic, setIsPublic] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -21,13 +20,11 @@ export default function Groups(props) {
     async function onLoad() {
       try {
         const group = await loadGroup();
-        const { groupName, attachment } = group;
-
-        if (attachment) {
-          group.attachmentURL = await Storage.vault.get(attachment);
-        }
+        const { groupName, description, isPublic } = group;
 
         setGroupName(groupName);
+        setDescription(description);
+        setIsPublic(isPublic);
         setGroup(group);
       } catch (e) {
         alert(e);
@@ -41,14 +38,6 @@ export default function Groups(props) {
     return groupName.length > 0;
   }
   
-  function formatFilename(str) {
-    return str.replace(/^\w+-/, "");
-  }
-  
-  function handleFileChange(event) {
-    file.current = event.target.files[0];
-  }
-  
   function saveGroup(group) {
     return API.put("notes", `/groups/${props.match.params.id}`, {
       body: group
@@ -56,28 +45,14 @@ export default function Groups(props) {
   }
   
   async function handleSubmit(event) {
-    let attachment;
-  
     event.preventDefault();
-  
-    if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
-      alert(
-        `Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE /
-          1000000} MB.`
-      );
-      return;
-    }
-  
     setIsLoading(true);
   
     try {
-      if (file.current) {
-        attachment = await s3Upload(file.current);
-      }
-  
       await saveGroup({
         groupName,
-        attachment: attachment || group.attachment
+        description,
+        isPublic
       });
       props.history.push("/");
     } catch (e) {
@@ -117,29 +92,15 @@ export default function Groups(props) {
       {group && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="groupName">
-            <FormControl
-              value={groupName}
-              componentClass="textarea"
-              onChange={e => setGroupName(e.target.value)}
-            />
+            <ControlLabel>Group Name</ControlLabel>
+            <FormControl value={groupName} componentClass="input" onChange={e => setGroupName(e.target.value)} />
           </FormGroup>
-          {group.attachment && (
-            <FormGroup>
-              <ControlLabel>Attachment</ControlLabel>
-              <FormControl.Static>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={group.attachmentURL}
-                >
-                  {formatFilename(group.attachment)}
-                </a>
-              </FormControl.Static>
-            </FormGroup>
-          )}
-          <FormGroup controlId="file">
-            {!group.attachment && <ControlLabel>Attachment</ControlLabel>}
-            <FormControl onChange={handleFileChange} type="file" />
+          <FormGroup controlId="description">
+            <ControlLabel>Description</ControlLabel>
+            <FormControl value={description} componentClass="textarea" onChange={e => setDescription(e.target.value)} />
+          </FormGroup>
+          <FormGroup controlId="isPublic">
+            <Checkbox checked={isPublic} onChange={e => setIsPublic(e.target.checked)}>Public Group</Checkbox>
           </FormGroup>
           <LoaderButton
             block
