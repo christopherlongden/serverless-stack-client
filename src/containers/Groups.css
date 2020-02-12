@@ -1,0 +1,8 @@
+.Groups form {
+    padding-bottom: 15px;
+  }
+  
+.Groups form textarea {
+height: 300px;
+font-size: 24px;
+}

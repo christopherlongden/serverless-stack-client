@@ -7,6 +7,8 @@ import AppliedRoute from "./components/AppliedRoute";
 import Signup from "./containers/Signup";
 import NewNote from "./containers/NewNote";
 import Notes from "./containers/Notes";
+import NewGroup from "./containers/NewGroup";
+import Groups from "./containers/Groups";
 import Settings from "./containers/Settings";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
@@ -20,6 +22,8 @@ export default function Routes({ appProps }) {
         <AuthenticatedRoute path="/settings" exact component={Settings} appProps={appProps} />
         <AuthenticatedRoute path="/notes/new" exact component={NewNote} appProps={appProps} />
         <AuthenticatedRoute path="/notes/:id" exact component={Notes} appProps={appProps} />
+        <AuthenticatedRoute path="/groups/new" exact component={NewGroup} appProps={appProps} />
+        <AuthenticatedRoute path="/groups/:id" exact component={Groups} appProps={appProps} />
         { /* Finally, catch all unmatched routes */ }
         <Route component={NotFound} />
       </Switch>
