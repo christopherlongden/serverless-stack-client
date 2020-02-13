@@ -5,11 +5,13 @@ import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./Notes.css";
 import { s3Upload } from "../libs/awsLib";
+import GroupPicker from "../components/GroupPicker"
 
-export default function Notes(props) {
+export default function Notes({groups, ...props}) {
     const file = useRef(null);
     const [note, setNote] = useState(null);
     const [content, setContent] = useState("");
+    const [groupId, setGroupId] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -21,7 +23,7 @@ export default function Notes(props) {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment } = note;
+        const { content, attachment, groupId } = note;
 
         if (attachment) {
           note.attachmentURL = await Storage.vault.get(attachment);
@@ -29,6 +31,7 @@ export default function Notes(props) {
 
         setContent(content);
         setNote(note);
+        setGroupId(groupId);
       } catch (e) {
         alert(e);
       }
@@ -77,7 +80,8 @@ export default function Notes(props) {
   
       await saveNote({
         content,
-        attachment: attachment || note.attachment
+        attachment: attachment || note.attachment,
+        groupId
       });
       props.history.push("/");
     } catch (e) {
@@ -141,6 +145,12 @@ export default function Notes(props) {
             {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
+          <GroupPicker
+            groupId={groupId}
+            setGroupId={setGroupId}
+            groups={groups}
+            isLoading={isLoading}
+          />
           <LoaderButton
             block
             type="submit"
