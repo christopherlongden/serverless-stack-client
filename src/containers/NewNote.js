@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import GroupPicker from "../components/GroupPicker"
@@ -7,30 +7,11 @@ import "./NewNote.css";
 import { API } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
 
-export default function NewNote(props) {
+export default function NewNote({groups, ...props}) {
   const file = useRef(null);
   const [content, setContent] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [groups, setGroups] = useState([]);
-
-  useEffect(() => {
-    function loadGroups() {
-      return API.get("notes", "/groups");
-    }
-
-    async function onLoad() {
-      try {
-        const groups = await loadGroups();
-        setGroups( [{ groupId: null, groupName: "Select a Group" }].concat(groups));
-      } catch (e) {
-        alert(e);
-      }
-
-      setIsLoading(false);
-    }
-
-    onLoad();
-  });
+  const [groupId, setGroupId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
     return content.length > 0;
@@ -42,7 +23,7 @@ export default function NewNote(props) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-  
+
     if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
       alert(
         `Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE /
@@ -58,7 +39,7 @@ export default function NewNote(props) {
         ? await s3Upload(file.current)
         : null;
   
-      await createNote({ content, attachment });
+      await createNote({ content, groupId, attachment });
       props.history.push("/");
     } catch (e) {
       alert(e);
@@ -76,14 +57,18 @@ export default function NewNote(props) {
     <div className="NewNote">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="content">
-          <FormControl value={content} componentClass="textarea" onChange={e => setContent(e.target.value)}
-          />
+          <FormControl value={content} componentClass="textarea" onChange={e => setContent(e.target.value)}/>
         </FormGroup>
         <FormGroup controlId="file">
           <ControlLabel>Attachment</ControlLabel>
           <FormControl onChange={handleFileChange} type="file" />
         </FormGroup>
-        <GroupPicker groups={groups}/>
+        <GroupPicker
+          groupId={groupId}
+          setGroupId={setGroupId}
+          groups={groups}
+          isLoading={isLoading}
+        />
         <LoaderButton block type="submit" bsSize="large" bsStyle="primary" isLoading={isLoading} disabled={!validateForm()}>
           Create
         </LoaderButton>

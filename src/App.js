@@ -4,11 +4,12 @@ import { Nav, Navbar, NavItem } from "react-bootstrap";
 import "./App.css";
 import Routes from "./Routes";
 import { LinkContainer } from "react-router-bootstrap";
-import { Auth } from "aws-amplify";
+import { Auth, API } from "aws-amplify";
 
 function App(props) {
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
+  const [groups, setGroups] = useState([]);
 
   useEffect(() => {
     onLoad();
@@ -24,8 +25,15 @@ function App(props) {
         alert(e);
       }
     }
-  
+
     setIsAuthenticating(false);
+
+    try {
+      const groups = await API.get("notes", "/groups");
+      setGroups(groups);
+    } catch (e) {
+      alert(e);
+    }
   }
 
   async function handleLogout() {
@@ -68,7 +76,7 @@ function App(props) {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+        <Routes appProps={{ isAuthenticated, userHasAuthenticated, groups }} />
       </div>
     )
   );

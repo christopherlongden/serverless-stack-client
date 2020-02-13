@@ -6,9 +6,9 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import config from "../config";
 
-export default function Home(props) {
+export default function Home({groups, ...props}) {
   const [notes, setNotes] = useState([]);
-  const [groups, setGroups] = useState([]);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,9 +19,8 @@ export default function Home(props) {
   
       try {
         const notes = await loadNotes();
-        const groups = await loadGroups();
         setNotes(notes);
-        setGroups(groups);
+        
       } catch (e) {
         alert(e);
       }
@@ -36,8 +35,8 @@ export default function Home(props) {
     return API.get("notes", "/notes");
   }
 
-  function loadGroups() {
-    return API.get("notes", "/groups");
+  function getValue(obj, key, value) {
+    return obj.find(function(v){ return v[key] === value});
   }
 
   function renderNotesList(notes) {
@@ -45,7 +44,7 @@ export default function Home(props) {
       i !== 0 ? (
         <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
           <ListGroupItem header={note.content.trim().split("\n")[0]}>
-            {"Created: " + new Date(note.createdAt).toLocaleString()}
+            { "Created: " + new Date(note.createdAt).toLocaleString() + " [" + getValue(groups, "groupId", note.groupId).groupName + "]" }
           </ListGroupItem>
         </LinkContainer>
       ) : (
