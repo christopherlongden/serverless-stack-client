@@ -8,6 +8,7 @@ import config from "../config";
 
 export default function Home(props) {
   const [notes, setNotes] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +19,9 @@ export default function Home(props) {
   
       try {
         const notes = await loadNotes();
+        const groups = await loadGroups();
         setNotes(notes);
+        setGroups(groups);
       } catch (e) {
         alert(e);
       }
@@ -31,6 +34,10 @@ export default function Home(props) {
   
   function loadNotes() {
     return API.get("notes", "/notes");
+  }
+
+  function loadGroups() {
+    return API.get("notes", "/groups");
   }
 
   function renderNotesList(notes) {
@@ -46,6 +53,26 @@ export default function Home(props) {
           <ListGroupItem>
             <h4>
               <b>{"\uFF0B"}</b> Create a new note
+            </h4>
+          </ListGroupItem>
+        </LinkContainer>
+      )
+    );
+  }
+
+  function renderGroupsList(groups) {
+    return [{}].concat(groups).map((group, i) =>
+      i !== 0 ? (
+        <LinkContainer key={group.groupId} to={`/groups/${group.groupId}`}>
+          <ListGroupItem header={group.groupName}>
+            {"Created: " + new Date(group.createdAt).toLocaleString() + " Public: " + group.isPublic}
+          </ListGroupItem>
+        </LinkContainer>
+      ) : (
+        <LinkContainer key="new" to="/groups/new">
+          <ListGroupItem>
+            <h4>
+              <b>{"\uFF0B"}</b> Create a new group
             </h4>
           </ListGroupItem>
         </LinkContainer>
@@ -71,20 +98,28 @@ export default function Home(props) {
     );
   }
 
-  function renderNotes() {
+  function renderPage() {
     return (
-      <div className="notes">
-        <PageHeader>Your Notes</PageHeader>
-        <ListGroup>
-          {!isLoading && renderNotesList(notes)}
-        </ListGroup>
-      </div>
+      <>
+        <div className="content">
+          <PageHeader>Your Groups</PageHeader>
+          <ListGroup>
+            {!isLoading && renderGroupsList(groups)}
+          </ListGroup>
+        </div>
+        <div className="content">
+          <PageHeader>Your Notes</PageHeader>
+          <ListGroup>
+            {!isLoading && renderNotesList(notes)}
+          </ListGroup>
+        </div>
+      </>
     );
   }
 
   return (
     <div className="Home">
-      {props.isAuthenticated ? renderNotes() : renderLander()}
+      {props.isAuthenticated ? renderPage() : renderLander()}
     </div>
   );
 }
