@@ -65,7 +65,7 @@ export default function Home(props) {
       i !== 0 ? (
         <LinkContainer key={group.groupId} to={`/groups/${group.groupId}`}>
           <ListGroupItem header={group.groupName}>
-            {"Created: " + new Date(group.createdAt).toLocaleString()}
+            {"Created: " + new Date(group.createdAt).toLocaleString() + " Public: " + group.isPublic}
           </ListGroupItem>
         </LinkContainer>
       ) : (
