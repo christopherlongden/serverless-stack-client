@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
@@ -9,7 +9,27 @@ import { s3Upload } from "../libs/awsLib";
 export default function NewNote(props) {
   const file = useRef(null);
   const [content, setContent] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    function loadGroups() {
+      return API.get("notes", "/groups");
+    }
+
+    async function onLoad() {
+      try {
+        const groups = await loadGroups();
+        setGroups( [{ groupId: null, groupName: "Select a Group" }].concat(groups));
+      } catch (e) {
+        alert(e);
+      }
+
+      setIsLoading(false);
+    }
+
+    onLoad();
+  });
 
   function validateForm() {
     return content.length > 0;
@@ -55,15 +75,18 @@ export default function NewNote(props) {
     <div className="NewNote">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="content">
-          <FormControl
-            value={content}
-            componentClass="textarea"
-            onChange={e => setContent(e.target.value)}
+          <FormControl value={content} componentClass="textarea" onChange={e => setContent(e.target.value)}
           />
         </FormGroup>
         <FormGroup controlId="file">
           <ControlLabel>Attachment</ControlLabel>
           <FormControl onChange={handleFileChange} type="file" />
+        </FormGroup>
+        <FormGroup controlId="group">
+          <ControlLabel>Group</ControlLabel>
+          <FormControl componentClass="select">
+            {groups.map((group) => <option value={group.groupId}>{group.groupName}</option>)}
+          </FormControl>
         </FormGroup>
         <LoaderButton
           block
