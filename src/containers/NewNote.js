@@ -1,6 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import GroupPicker from "../components/GroupPicker"
 import config from "../config";
 import "./NewNote.css";
 import { API } from "aws-amplify";
@@ -82,20 +83,8 @@ export default function NewNote(props) {
           <ControlLabel>Attachment</ControlLabel>
           <FormControl onChange={handleFileChange} type="file" />
         </FormGroup>
-        <FormGroup controlId="group">
-          <ControlLabel>Group</ControlLabel>
-          <FormControl componentClass="select">
-            {groups.map((group) => <option value={group.groupId}>{group.groupName}</option>)}
-          </FormControl>
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          bsStyle="primary"
-          isLoading={isLoading}
-          disabled={!validateForm()}
-        >
+        <GroupPicker groups={groups}/>
+        <LoaderButton block type="submit" bsSize="large" bsStyle="primary" isLoading={isLoading} disabled={!validateForm()}>
           Create
         </LoaderButton>
       </form>
