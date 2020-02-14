@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import GroupPicker from "../components/GroupPicker"
@@ -12,6 +12,13 @@ export default function NewNote({groups, ...props}) {
   const [content, setContent] = useState("");
   const [groupId, setGroupId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+      if (groups.length > 0) {
+         setGroupId(groups[0].groupId);
+        // alert('GroupID: ' + groupId);
+      }
+  }, [groupId, groups]);
 
   function validateForm() {
     return content.length > 0;

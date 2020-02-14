@@ -6,9 +6,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import config from "../config";
 
-export default function Home({groups, ...props}) {
+export default function Home({groups, setGroups, ...props}) {
   const [notes, setNotes] = useState([]);
-  
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +19,11 @@ export default function Home({groups, ...props}) {
       try {
         const notes = await loadNotes();
         setNotes(notes);
+
+        // Seems like a waste as I am loading the groups in App but I need to update them
+        // again here because a group can be added or a name edited.
+        const updateGroups = await loadGroups();
+        setGroups(updateGroups);
         
       } catch (e) {
         alert(e);
@@ -29,10 +33,14 @@ export default function Home({groups, ...props}) {
     }
   
     onLoad();
-  }, [props.isAuthenticated]);
+  }, [props.isAuthenticated, setGroups]);
   
   function loadNotes() {
     return API.get("notes", "/notes");
+  }
+
+  function loadGroups() {
+    return API.get("notes", "/groups");
   }
 
   function getValue(obj, key, value) {
@@ -44,7 +52,7 @@ export default function Home({groups, ...props}) {
       i !== 0 ? (
         <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
           <ListGroupItem header={note.content.trim().split("\n")[0]}>
-            { "Created: " + new Date(note.createdAt).toLocaleString() + " [" + getValue(groups, "groupId", note.groupId).groupName + "]" }
+            { "Created: " + new Date(note.createdAt).toDateString() + " / " + getValue(groups, "groupId", note.groupId).groupName}
           </ListGroupItem>
         </LinkContainer>
       ) : (
@@ -64,7 +72,7 @@ export default function Home({groups, ...props}) {
       i !== 0 ? (
         <LinkContainer key={group.groupId} to={`/groups/${group.groupId}`}>
           <ListGroupItem header={group.groupName}>
-            {"Created: " + new Date(group.createdAt).toLocaleString() + " Public: " + group.isPublic}
+            {"Public: " + group.isPublic}
           </ListGroupItem>
         </LinkContainer>
       ) : (

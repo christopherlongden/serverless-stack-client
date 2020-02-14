@@ -76,7 +76,7 @@ function App(props) {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <Routes appProps={{ isAuthenticated, userHasAuthenticated, groups }} />
+        <Routes appProps={{ isAuthenticated, userHasAuthenticated, groups, setGroups }} />
       </div>
     )
   );

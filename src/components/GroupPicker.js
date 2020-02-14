@@ -3,7 +3,7 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 export default function GroupPicker({groups, groupId, setGroupId, isLoading, ...props })
   {
-    // Is this right; it seems like I am setting state?
+    // handle a change
     function handleChange(e)
     {
       setGroupId(e.target.value);
